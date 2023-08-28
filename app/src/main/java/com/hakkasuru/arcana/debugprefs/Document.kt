@@ -19,14 +19,13 @@ fun DocumentComposable(
     description: String,
     onClick: () -> Unit
 ) {
-    Box(modifier = Modifier.clickable { onClick() }) {
+    Box(modifier = Modifier.padding(8.dp).clickable { onClick() }) {
         Column(
             modifier = Modifier
-                .padding(8.dp)
                 .fillMaxWidth(1f)
         ) {
-            Text(text = title, style = Typography.titleSmall)
-            Text(text = description)
+            Text(text = title, style = Typography.titleMedium)
+            if(description.isNotEmpty()) Text(text = description)
         }
     }
 }

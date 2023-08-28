@@ -26,7 +26,7 @@ class ArcanaFactory {
                 arrayOf(cls)
             ) { _, method, _ ->
                 val flag = method.getAnnotation(Record::class.java) ?: return@newProxyInstance false
-                val key = booleanPreferencesKey(flag.key)
+                val key = booleanPreferencesKey("${document.key}_${flag.key}")
                 return@newProxyInstance dataStore.getBoolean(key, flag.defaultValue)
             } as T
         }

@@ -6,16 +6,19 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
-import com.hakkasuru.arcana.core.arcana.Arcana
-import com.hakkasuru.arcana.core.arcana.ArcanaFactory
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.hakkasuru.arcana.core.arcana.document.Login
+import com.hakkasuru.arcana.debugprefs.PreferenceScreen
+import com.hakkasuru.arcana.home.HomeScreen
+import com.hakkasuru.arcana.login.LoginScreen
 import com.hakkasuru.arcana.ui.theme.ArcanaTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,10 +29,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val arcana = ArcanaFactory.create<Arcana>(LocalContext.current)
-                    val flag = arcana.isGreetingEnabled().collectAsState(false).value
-                    if (flag) Greeting("John")
-                    else Text(text = "Greeting disabled")
+                    App()
                 }
             }
         }
@@ -37,17 +37,13 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun App() {
+    val navController = rememberNavController()
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    ArcanaTheme {
-        Greeting("Android")
+    NavHost(navController = navController, startDestination = "home") {
+        composable("home") { HomeScreen(navController) }
+        composable("preferences") { PreferenceScreen(navController) }
+        composable("preferences/login") { PreferenceScreen(navController, cls = Login::class.java) }
+        composable("login") { LoginScreen() }
     }
 }
